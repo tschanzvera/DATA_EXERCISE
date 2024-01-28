@@ -35,9 +35,11 @@ const Pagination = ({ items, pageSizeOptions, defaultPageSize, onPageChange }) =
 
   const list = pages.map((page) => {
     return (
-      <Button key={page} onClick={() => onPageChange(page, pageSize)} className="page-item">
-        {page}
+     
+      <Button key={page} variant="warning" onClick={() => onPageChange(page, pageSize)} className="page-item">
+        {page} 
       </Button>
+     
     );
   });
 
@@ -126,10 +128,11 @@ const dataFetchReducer = (state, action) => {
 };
 // App that gets data from Hacker News url
 function App() {
-  const { Fragment, useState } = React;
+  const { useState } = React;
+  const { ListGroup , Button} = ReactBootstrap;
   const [query, setQuery] = useState("MIT");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize,setPageSize]=useState(10);
+  const [{currentPage, pageSize}, setPage] = useState({currentPage: 1, pageSize: 10});
+ 
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
     "https://hn.algolia.com/api/v1/search?query=MIT",
     {
@@ -137,8 +140,8 @@ function App() {
     }
   );
   const handlePageChange = (newPage, newPageSize) => {
-    setCurrentPage(newPage);
-    setPageSize(newPageSize);
+    setPage({currentPage: newPage, pageSize: newPageSize});
+   
   };
   let page = data.hits;
   if (page.length >= 1) {
@@ -146,10 +149,10 @@ function App() {
     console.log(`currentPage: ${currentPage}`);
   }
   return (
-    <Fragment>
+    <>
       <form
         onSubmit={event => {
-          doFetch(`https://hn.algolia.com/api/v1/search?query=${query}`);//??
+          doFetch(`https://hn.algolia.com/api/v1/search?query=${query}`);
           event.preventDefault();
         }}
       >
@@ -158,7 +161,7 @@ function App() {
           value={query}
           onChange={event => setQuery(event.target.value)}
         />
-        <button type="submit">Search</button>
+        <Button type="submit" variant="info">Search</Button>
       </form>
 
       {isError && <div>Something went wrong ...</div>}
@@ -166,13 +169,13 @@ function App() {
       {isLoading ? (
         <div>Loading ...</div>
       ) : (
-        <ul>
+        <ListGroup>
           {page.map(item => (
-            <li key={item.objectID}>
+            <ListGroup.Item key={item.objectID}>
              <a href={item.url}>{item.title}</a>
-            </li>
+            </ListGroup.Item>
           ))}
-        </ul>
+        </ListGroup>
       )}
       {!isLoading && !isError && (  //??
       <Pagination
@@ -182,7 +185,7 @@ function App() {
         defaultPageSize={10}
       ></Pagination>
       )}
-    </Fragment>
+    </>
   );
           }          
 
