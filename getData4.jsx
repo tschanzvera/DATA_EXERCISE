@@ -1,23 +1,3 @@
-// const Pagination = ({ items, pageSize, onPageChange }) => {
-//   const { Button } = ReactBootstrap;
-//   if (items.length <= 1) return null;
-
-//   let num = Math.ceil(items.length / pageSize);
-//   let pages = range(1, num + 1);
-//   const list = pages.map(page => {
-//     return (
-//       <Button key={page} onClick={onPageChange} className="page-item">
-//         {page}
-//       </Button>
-//     );
-//   });
-//   return (
-//     <nav>
-//       <ul className="pagination">{list}</ul>
-//     </nav>
-//   );
-// };
-
 const Pagination = ({ items, pageSizeOptions, defaultPageSize, onPageChange }) => {
   const { Button, Form } = ReactBootstrap;
   if (items.length <= 1) return null;
