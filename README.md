@@ -2,7 +2,7 @@
 
 ## DESCRIPTION
 
-This was a little project that I had in my MITxPRO course. The exercise was to use UseEffect and useReduce to manage fetch of online data using axios. In this project you can search for data and chose how many items you want displayed per page as well as go to the next page by clicking the next button or just clicking on the button for the next page. I used UseReducer to manage the state of the page. For the styling I used bootstrap.
+This was a little project that I had in my MITxPRO course. The exercise was to use UseEffect and useReduce to manage fetch of online data. In this project you can search for data and chose how many items you want displayed per page as well as go to the next page by clicking the next button or just clicking on the button for the next page. I used UseReducer to manage the state of the page. For the styling I used bootstrap.
 
 ## SUPPORT
 
