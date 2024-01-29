@@ -30,13 +30,13 @@ const Pagination = ({ items, pageSizeOptions, defaultPageSize, onPageChange }) =
   const handlePageSizeChange = (event) => {
     const newSize = parseInt(event.target.value, 10);
     setPageSize(newSize);
-    onPageChange(1, newSize); // Reset to the first page when changing page size
+    onPageChange({type:"PAGESIZE", value:newSize}); // Reset to the first page when changing page size
   };
 
   const list = pages.map((page) => {
     return (
      
-      <Button key={page} variant="warning" onClick={() => onPageChange(page, pageSize)} className="page-item">
+      <Button key={page} variant="warning" onClick={() => onPageChange({type: "PAGE", value:page})} className="page-item">
         {page} 
       </Button>
      
@@ -45,7 +45,9 @@ const Pagination = ({ items, pageSizeOptions, defaultPageSize, onPageChange }) =
 
   return (
     <nav>
-      <ul className="pagination">{list}</ul>
+      <ul className="pagination">{list} 
+      <Button onClick={()=> onPageChange({type: "NEXT"})}>{">"}</Button>
+      </ul>
       <Form.Group controlId="pageSizeSelect">
         <Form.Label>Items per page:</Form.Label>
         <Form.Control as="select" value={pageSize} onChange={handlePageSizeChange}>
@@ -127,11 +129,32 @@ const dataFetchReducer = (state, action) => {
     }
 };
 // App that gets data from Hacker News url
+function pageReducer(state, action){
+  switch (action.type){
+    case "PAGESIZE":
+      return {
+        ...state,
+        pageSize: action.value,
+        currentPage: 1
+      };
+    case "PAGE":
+      return {
+        ...state,
+        currentPage: action.value
+      };
+    case "NEXT":
+      return {
+        ...state,
+        currentPage: state.currentPage +1
+      }
+  };
+
+}
 function App() {
-  const { useState } = React;
+  const { useState , useReducer} = React;
   const { ListGroup , Button} = ReactBootstrap;
   const [query, setQuery] = useState("MIT");
-  const [{currentPage, pageSize}, setPage] = useState({currentPage: 1, pageSize: 10});
+  const [{currentPage, pageSize}, setPage] = useReducer(pageReducer,{currentPage: 1, pageSize: 10});
  
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
     "https://hn.algolia.com/api/v1/search?query=MIT",
@@ -139,10 +162,7 @@ function App() {
       hits: []
     }
   );
-  const handlePageChange = (newPage, newPageSize) => {
-    setPage({currentPage: newPage, pageSize: newPageSize});
-   
-  };
+
   let page = data.hits;
   if (page.length >= 1) {
     page = paginate(page, currentPage, pageSize);
@@ -181,7 +201,7 @@ function App() {
       <Pagination
         items={data.hits}
         pageSizeOptions={[5,10,20]}
-        onPageChange={handlePageChange}
+        onPageChange={setPage}
         defaultPageSize={10}
       ></Pagination>
       )}
